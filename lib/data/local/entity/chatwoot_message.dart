@@ -1,3 +1,4 @@
+import 'package:chatwoot_sdk/data/local/entity/chatwoot_attachment.dart';
 import 'package:chatwoot_sdk/data/remote/responses/chatwoot_event.dart';
 import 'package:equatable/equatable.dart';
 import 'package:hive/hive.dart';
@@ -50,7 +51,7 @@ class ChatwootMessage extends Equatable {
   ///list of media/doc/file attachment for message
   @JsonKey()
   @HiveField(7)
-  final List<dynamic>? attachments;
+  final List<ChatWootAttrachment>? attachments;
 
   ///The user this message belongs to
   @JsonKey(name: "sender")

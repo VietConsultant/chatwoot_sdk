@@ -24,7 +24,7 @@ class ChatwootMessageAdapter extends TypeAdapter<ChatwootMessage> {
       contentAttributes: fields[4] as dynamic,
       createdAt: fields[5] as String,
       conversationId: fields[6] as int?,
-      attachments: (fields[7] as List?)?.cast<dynamic>(),
+      attachments: (fields[7] as List?)?.cast<ChatWootAttrachment>(),
       sender: fields[8] as ChatwootEventMessageUser?,
     );
   }
@@ -68,22 +68,23 @@ class ChatwootMessageAdapter extends TypeAdapter<ChatwootMessage> {
 // JsonSerializableGenerator
 // **************************************************************************
 
-ChatwootMessage _$ChatwootMessageFromJson(Map<String, dynamic> json) {
-  return ChatwootMessage(
-    id: idFromJson(json['id']),
-    content: json['content'] as String?,
-    messageType: messageTypeFromJson(json['message_type']),
-    contentType: json['content_type'] as String?,
-    contentAttributes: json['content_attributes'],
-    createdAt: createdAtFromJson(json['created_at']),
-    conversationId: idFromJson(json['conversation_id']),
-    attachments: json['attachments'] as List<dynamic>?,
-    sender: json['sender'] == null
-        ? null
-        : ChatwootEventMessageUser.fromJson(
-            json['sender'] as Map<String, dynamic>),
-  );
-}
+ChatwootMessage _$ChatwootMessageFromJson(Map<String, dynamic> json) =>
+    ChatwootMessage(
+      id: idFromJson(json['id']),
+      content: json['content'] as String?,
+      messageType: messageTypeFromJson(json['message_type']),
+      contentType: json['content_type'] as String?,
+      contentAttributes: json['content_attributes'],
+      createdAt: createdAtFromJson(json['created_at']),
+      conversationId: idFromJson(json['conversation_id']),
+      attachments: (json['attachments'] as List<dynamic>?)
+          ?.map((e) => ChatWootAttrachment.fromJson(e as Map<String, dynamic>))
+          .toList(),
+      sender: json['sender'] == null
+          ? null
+          : ChatwootEventMessageUser.fromJson(
+              json['sender'] as Map<String, dynamic>),
+    );
 
 Map<String, dynamic> _$ChatwootMessageToJson(ChatwootMessage instance) =>
     <String, dynamic>{
@@ -94,6 +95,6 @@ Map<String, dynamic> _$ChatwootMessageToJson(ChatwootMessage instance) =>
       'content_attributes': instance.contentAttributes,
       'created_at': instance.createdAt,
       'conversation_id': instance.conversationId,
-      'attachments': instance.attachments,
+      'attachments': instance.attachments?.map((e) => e.toJson()).toList(),
       'sender': instance.sender?.toJson(),
     };

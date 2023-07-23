@@ -4,6 +4,7 @@ import 'dart:core';
 
 import 'package:chatwoot_sdk/chatwoot_callbacks.dart';
 import 'package:chatwoot_sdk/chatwoot_client.dart';
+import 'package:chatwoot_sdk/data/local/entity/chatwoot_message.dart';
 import 'package:chatwoot_sdk/data/local/entity/chatwoot_user.dart';
 import 'package:chatwoot_sdk/data/local/local_storage.dart';
 import 'package:chatwoot_sdk/data/remote/chatwoot_client_exception.dart';
@@ -154,12 +155,34 @@ class ChatwootRepositoryImpl extends ChatwootRepository {
           ChatwootEventMessageType.message_created) {
         print("here comes message: $event");
         final message = chatwootEvent.message!.data!.getMessage();
-        localStorage.messagesDao.saveMessage(message);
+        ChatwootMessage tempMessagae = ChatwootMessage(
+            id: message.id,
+            content: message.content,
+            messageType: message.messageType,
+            contentType: message.contentType,
+            contentAttributes: message.contentAttributes,
+            createdAt: message.createdAt,
+            conversationId: message.conversationId,
+            attachments: chatwootEvent.message!.data!.attachments,
+            sender: message.sender);
+        localStorage.messagesDao.saveMessage(tempMessagae);
         if (message.isMine) {
           callbacks.onMessageDelivered
               ?.call(message, chatwootEvent.message!.data!.echoId!);
         } else {
-          callbacks.onMessageReceived?.call(message);
+          ChatwootMessage tempMessagae = ChatwootMessage(
+              id: message.id,
+              content: message.content,
+              messageType: message.messageType,
+              contentType: message.contentType,
+              contentAttributes: message.contentAttributes,
+              createdAt: message.createdAt,
+              conversationId: message.conversationId,
+              attachments: chatwootEvent.message!.data!.attachments,
+              sender: message.sender);
+          // result.attachments!.add(event);
+
+          callbacks.onMessageReceived?.call(tempMessagae);
         }
       } else if (chatwootEvent.message?.event ==
           ChatwootEventMessageType.message_updated) {

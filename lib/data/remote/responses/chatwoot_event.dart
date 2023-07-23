@@ -1,4 +1,5 @@
 import 'package:chatwoot_sdk/chatwoot_sdk.dart';
+import 'package:chatwoot_sdk/data/local/entity/chatwoot_attachment.dart';
 import 'package:chatwoot_sdk/data/local/local_storage.dart';
 import 'package:equatable/equatable.dart';
 import 'package:hive/hive.dart';
@@ -115,6 +116,9 @@ class ChatwootEventMessageData {
   @JsonKey()
   final dynamic users;
 
+  @JsonKey()
+  final List<ChatWootAttrachment>? attachments;
+
   ChatwootEventMessageData(
       {this.id,
       this.user,
@@ -135,6 +139,7 @@ class ChatwootEventMessageData {
       this.externalSourceIds,
       this.private,
       this.senderId,
+      this.attachments,
       this.users});
 
   factory ChatwootEventMessageData.fromJson(Map<String, dynamic> json) =>

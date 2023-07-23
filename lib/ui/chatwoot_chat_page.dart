@@ -203,9 +203,15 @@ class _ChatwootChatState extends State<ChatwootChat> {
       onPersistedMessagesRetrieved: (persistedMessages) {
         if (widget.enablePersistence) {
           setState(() {
-            _messages = persistedMessages
-                .map((message) => _chatwootMessageToTextMessage(message))
-                .toList();
+            _messages = persistedMessages.map((message) {
+              if (message.attachments != null &&
+                  message.attachments!.isNotEmpty &&
+                  message.attachments!.last.file_type!.contains('image')) {
+                return _chatwootMessageToImageMessage(message);
+              } else {
+                return _chatwootMessageToTextMessage(message);
+              }
+            }).toList();
           });
         }
         widget.onPersistedMessagesRetrieved?.call(persistedMessages);
@@ -215,9 +221,15 @@ class _ChatwootChatState extends State<ChatwootChat> {
           return;
         }
         setState(() {
-          final chatMessages = messages
-              .map((message) => _chatwootMessageToTextMessage(message))
-              .toList();
+          final chatMessages = messages.map((message) {
+            if (message.attachments != null &&
+                message.attachments!.isNotEmpty &&
+                message.attachments!.last.file_type!.contains('image')) {
+              return _chatwootMessageToImageMessage(message);
+            } else {
+              return _chatwootMessageToTextMessage(message);
+            }
+          }).toList();
           final mergedMessages =
               <types.Message>[..._messages, ...chatMessages].toSet().toList();
           final now = DateTime.now().millisecondsSinceEpoch;
@@ -229,7 +241,14 @@ class _ChatwootChatState extends State<ChatwootChat> {
         widget.onMessagesRetrieved?.call(messages);
       },
       onMessageReceived: (chatwootMessage) {
-        _addMessage(_chatwootMessageToTextMessage(chatwootMessage));
+        if (chatwootMessage.attachments != null &&
+            chatwootMessage.attachments!.isNotEmpty &&
+            chatwootMessage.attachments!.last.file_type!.contains('image')) {
+          _addMessage(_chatwootMessageToImageMessage(chatwootMessage));
+        } else {
+          _addMessage(_chatwootMessageToTextMessage(chatwootMessage));
+        }
+
         widget.onMessageReceived?.call(chatwootMessage);
       },
       onMessageDelivered: (chatwootMessage, echoId) {
@@ -309,6 +328,31 @@ class _ChatwootChatState extends State<ChatwootChat> {
                 imageUrl: avatarUrl,
               ),
         text: message.content ?? "",
+        status: types.Status.seen,
+        createdAt: DateTime.parse(message.createdAt).millisecondsSinceEpoch);
+  }
+
+  types.ImageMessage _chatwootMessageToImageMessage(ChatwootMessage message,
+      {String? echoId}) {
+    String? avatarUrl = message.sender?.avatarUrl ?? message.sender?.thumbnail;
+
+    //Sets avatar url to null if its a gravatar not found url
+    //This enables placeholder for avatar to show
+    if (avatarUrl?.contains("?d=404") ?? false) {
+      avatarUrl = null;
+    }
+    return types.ImageMessage(
+        name: message.content ?? "",
+        size: message.attachments!.last.file_size!,
+        uri: message.attachments!.last.data_url!,
+        id: echoId ?? message.id.toString(),
+        author: message.isMine
+            ? _user
+            : types.User(
+                id: message.sender?.id.toString() ?? idGen.v4(),
+                firstName: message.sender?.name,
+                imageUrl: avatarUrl,
+              ),
         status: types.Status.seen,
         createdAt: DateTime.parse(message.createdAt).millisecondsSinceEpoch);
   }

@@ -78,6 +78,11 @@ final messageToClientInstanceBoxProvider = Provider<Box<String>>((ref) {
       ChatwootMessagesBoxNames.MESSAGES_TO_CLIENT_INSTANCE_KEY.toString());
 });
 
+final attrimentToClientInstanceBoxProvider = Provider<Box<String>>((ref) {
+  return Hive.box<String>(
+      ChatwootMessagesBoxNames.MESSAGES_TO_CLIENT_INSTANCE_KEY.toString());
+});
+
 ///Provides hive box to store relations between chatwoot client instance and user object,
 ///which is used when persistence is enabled. Client instances are distinguished using baseurl and inboxIdentifier
 final clientInstanceToUserBoxProvider = Provider<Box<String>>((ref) {

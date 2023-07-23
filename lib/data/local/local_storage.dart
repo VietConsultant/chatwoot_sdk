@@ -2,6 +2,7 @@ import 'package:chatwoot_sdk/data/local/dao/chatwoot_contact_dao.dart';
 import 'package:chatwoot_sdk/data/local/dao/chatwoot_conversation_dao.dart';
 import 'package:chatwoot_sdk/data/local/dao/chatwoot_messages_dao.dart';
 import 'package:chatwoot_sdk/data/local/dao/chatwoot_user_dao.dart';
+import 'package:chatwoot_sdk/data/local/entity/chatwoot_attachment.dart';
 import 'package:chatwoot_sdk/data/local/entity/chatwoot_conversation.dart';
 import 'package:chatwoot_sdk/data/remote/responses/chatwoot_event.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -16,6 +17,7 @@ const CHATWOOT_CONVERSATION_HIVE_TYPE_ID = 1;
 const CHATWOOT_MESSAGE_HIVE_TYPE_ID = 2;
 const CHATWOOT_USER_HIVE_TYPE_ID = 3;
 const CHATWOOT_EVENT_USER_HIVE_TYPE_ID = 4;
+const CHATWOOT_ATTRACMENT_USER_HIVE_TYPE_ID = 5;
 
 class LocalStorage {
   ChatwootUserDao userDao;
@@ -41,6 +43,9 @@ class LocalStorage {
       }
       if (!Hive.isAdapterRegistered(CHATWOOT_MESSAGE_HIVE_TYPE_ID)) {
         Hive..registerAdapter(ChatwootMessageAdapter());
+      }
+      if (!Hive.isAdapterRegistered(CHATWOOT_ATTRACMENT_USER_HIVE_TYPE_ID)) {
+        Hive..registerAdapter(ChatWootAttrachmentAdapter());
       }
       if (!Hive.isAdapterRegistered(CHATWOOT_EVENT_USER_HIVE_TYPE_ID)) {
         Hive..registerAdapter(ChatwootEventMessageUserAdapter());

@@ -71,7 +71,7 @@ class ChatwootChatTheme extends ChatTheme {
       Widget? sendButtonIcon,
       Widget? sendingIcon,
       TextStyle sentMessageBodyTextStyle = const TextStyle(
-        color: Colors.white,
+        color: Colors.black,
         fontSize: 16,
         fontWeight: FontWeight.w500,
         height: 1.5,
@@ -145,11 +145,13 @@ class ChatwootChatTheme extends ChatTheme {
       double messageInsetsHorizontal = 10.0,
       double messageInsetsVertical = 10.0,
       InputDecoration inputTextDecoration = const InputDecoration(),
+      Color inputTextCursorColor = Colors.black,
       EdgeInsets inputMargin = EdgeInsets.zero})
       : super(
           unreadHeaderTheme: unreadHeaderTheme,
           userAvatarImageBackgroundColor: userAvatarImageBackgroundColor,
           inputTextDecoration: inputTextDecoration,
+          inputTextCursorColor: inputTextCursorColor,
           messageInsetsHorizontal: messageInsetsHorizontal,
           messageInsetsVertical: messageInsetsVertical,
           receivedEmojiMessageTextStyle: receivedEmojiMessageTextStyle,
